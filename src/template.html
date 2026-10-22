@@ -92,6 +92,12 @@ button.primary{background:var(--ground);border-color:var(--ground);color:#fff}
 button:hover{filter:brightness(1.06)}
 button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--onwheel);outline-offset:2px}
 .check{display:flex;align-items:center;gap:8px;font-size:14px}
+.modewrap{display:flex;flex-direction:column;gap:6px}
+.modelabel{font-weight:500}
+.seg{display:flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.seg button{flex:1 1 0;border:0;border-radius:0;padding:8px 10px;font-size:13.5px;background:var(--panel);color:var(--muted)}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
 dl{margin:0;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px}
 dt{color:var(--muted);font-size:13.5px}
 dd{margin:0;font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right}
@@ -140,6 +146,13 @@ footer a{color:inherit}
 
   <div class="bench">
     <section class="controls" aria-label="{{settings}}">
+      <div class="modewrap">
+        <span class="modelabel" id="modeL">{{modeL}}</span>
+        <div class="seg" role="group" aria-labelledby="modeL">
+          <button type="button" id="modeIn" aria-pressed="true">{{modeIn}}</button>
+          <button type="button" id="modeOut" aria-pressed="false">{{modeOut}}</button>
+        </div>
+      </div>
       <div class="ctrl">
         <label for="omega">{{omegaL}}</label><output id="omegaOut" for="omega"></output>
         <input id="omega" type="range" min="-1.5" max="1.5" step="0.05" value="0.6">
@@ -152,7 +165,7 @@ footer a{color:inherit}
       <div class="ctrl">
         <label for="aim">{{aimL}}</label><output id="aimOut" for="aim"></output>
         <input id="aim" type="range" min="-60" max="60" step="1" value="0">
-        <small>{{aimH}}</small>
+        <small id="aimH">{{aimH}}</small>
       </div>
       <div class="ctrl">
         <label for="slow">{{slowL}}</label><output id="slowOut" for="slow"></output>
@@ -172,9 +185,10 @@ footer a{color:inherit}
         <dt>{{rV}}</dt><dd id="rV">–</dd>
         <dt>{{rRim}}</dt><dd id="rRim">–</dd>
         <dt>{{rCor}}</dt><dd id="rCor">–</dd>
-        <dt>{{rMiss}}</dt><dd id="rMiss">–</dd>
+        <dt id="rMissL">{{rMiss}}</dt><dd id="rMiss">–</dd>
       </dl>
-      <p class="explain">{{explain}}</p>
+      <p class="explain" id="explainIn">{{explain}}</p>
+      <p class="explain" id="explainOut" hidden>{{explainOut}}</p>
     </section>
   </div>
 
@@ -199,21 +213,32 @@ footer a{color:inherit}
   const ctxG = cvG.getContext('2d'), ctxW = cvW.getContext('2d');
   const fmt = (x, d=2) => x.toFixed(d).replace('.', t('dec')).replace('-', '−');
 
-  const S = { theta: 0, omega: +$('omega').value, paused: false, throws: [], active: null };
+  // mode: 'in' = fra kanten mot sentrum, 'out' = fra sentrum mot kanten
+  const S = { theta: 0, omega: +$('omega').value, paused: false, throws: [], active: null, mode: 'in' };
+  const wrap = a => Math.atan2(Math.sin(a), Math.cos(a));
 
   function css(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
 
   function makeThrow(){
     const omega = +$('omega').value, v = +$('speed').value, aim = +$('aim').value * Math.PI/180;
     S.omega = omega;
-    const th0 = S.theta;
+    const th0 = S.theta;   // kasteren/mottakeren står ved hjulvinkel 0, som på bakken er th0
+    if (S.mode === 'out') {
+      // Fra sentrum: ingen kantfart (ω × 0 = 0), ballen går rett utover i sikteretningen.
+      // Positiv sikte = kasterens venstre = foran mottakeren når karusellen går mot klokka.
+      const dir = th0 + aim;
+      const u = [v*Math.cos(dir), v*Math.sin(dir)];
+      // Ballen krysser kanten etter t = R/v; da har karusellen dreid ωR/v.
+      const miss = R * Math.abs(wrap(aim - omega*R/v));
+      return { mode: 'out', p0: [0, 0], u, t: 0, done: false, ground: [[0, 0]], local: [], miss, speed: v };
+    }
     const p0 = [R*Math.cos(th0), R*Math.sin(th0)];
     const inward = th0 + Math.PI + aim;             // positiv sikte = kasterens venstre
     const vr = [v*Math.cos(inward), v*Math.sin(inward)];
     const u = [vr[0] - omega*p0[1], vr[1] + omega*p0[0]];   // + ω × r
     const speed = Math.hypot(u[0], u[1]);
     const miss = Math.abs(p0[0]*u[1] - p0[1]*u[0]) / speed;
-    return { p0, u, t: 0, done: false, ground: [p0.slice()], local: [], miss, speed };
+    return { mode: 'in', p0, u, t: 0, done: false, ground: [p0.slice()], local: [], miss, speed };
   }
 
   function toWheel(p, theta){
@@ -260,11 +285,19 @@ footer a{color:inherit}
       const a = rot + k*Math.PI/18, r1 = k%3===0 ? R-0.3 : R-0.15;
       ctx.beginPath(); ctx.moveTo(r1*Math.cos(a), r1*Math.sin(a)); ctx.lineTo(R*Math.cos(a), R*Math.sin(a)); ctx.stroke();
     }
-    ctx.fillStyle = css('--fg');
-    ctx.beginPath(); ctx.arc(0,0,4*px,0,Math.PI*2); ctx.fill();
-    ctx.strokeStyle = css('--fg'); ctx.lineWidth = 1*px;
-    ctx.beginPath(); ctx.arc(0,0,0.35,0,Math.PI*2); ctx.stroke();
-    ctx.beginPath(); ctx.arc((R+0.35)*Math.cos(rot),(R+0.35)*Math.sin(rot),0.28,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = css('--fg'); ctx.strokeStyle = css('--fg'); ctx.lineWidth = 1*px;
+    const mark = (x, y) => {   // merke: ring med prikk, brukt for sentrum og mottaker
+      ctx.beginPath(); ctx.arc(x,y,4*px,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(x,y,0.35,0,Math.PI*2); ctx.stroke();
+    };
+    const ex = Math.cos(rot), ey = Math.sin(rot);
+    if (S.mode === 'out') {
+      mark(R*ex, R*ey);                                   // mottaker på kanten
+      ctx.beginPath(); ctx.arc(0,0,0.28,0,Math.PI*2); ctx.fill();   // kaster i sentrum
+    } else {
+      mark(0, 0);
+      ctx.beginPath(); ctx.arc((R+0.35)*ex,(R+0.35)*ey,0.28,0,Math.PI*2); ctx.fill();
+    }
     ctx.restore();
   }
 
@@ -302,7 +335,10 @@ footer a{color:inherit}
 
     px = setupCanvas(cvW, ctxW);
     drawWheel(ctxW, 0, px);
-    polyline(ctxW, [[R,0],[R - 2*R*Math.cos(aimRad), -2*R*Math.sin(aimRad)]], cG, 1.4, px, 0, [6,5]);
+    if (S.mode === 'out')
+      polyline(ctxW, [[0,0],[1.2*R*Math.cos(aimRad), 1.2*R*Math.sin(aimRad)]], cG, 1.4, px, 0, [6,5]);
+    else
+      polyline(ctxW, [[R,0],[R - 2*R*Math.cos(aimRad), -2*R*Math.sin(aimRad)]], cG, 1.4, px, 0, [6,5]);
     S.throws.forEach(tr => polyline(ctxW, tr.local, cW, tr === S.active ? 2.6 : 1.6, px));
     if (S.active && S.active.local.length && !S.active.done) ball(ctxW, S.active.local[S.active.local.length-1], px);
 
@@ -333,6 +369,19 @@ footer a{color:inherit}
     $('aimOut').textContent = aim === 0 ? '0° · ' + t('straight') : Math.abs(aim) + '° ' + (aim > 0 ? t('left') : t('right'));
     $('slowOut').textContent = fmt(+$('slow').value) + '×';
   }
+
+  function setMode(m){
+    S.mode = m;
+    $('modeIn').setAttribute('aria-pressed', m === 'in');
+    $('modeOut').setAttribute('aria-pressed', m === 'out');
+    $('rMissL').textContent = m === 'out' ? t('missOut') : t('missIn');
+    $('aimH').textContent = m === 'out' ? t('aimHOut') : t('aimHIn');
+    $('explainIn').hidden = m === 'out';
+    $('explainOut').hidden = m !== 'out';
+    if (S.active && S.active.done && S.active.mode !== m) S.active = null;   // måleverdiene tilhører forrige kasttype
+  }
+  $('modeIn').addEventListener('click', () => setMode('in'));
+  $('modeOut').addEventListener('click', () => setMode('out'));
 
   ['omega','speed','aim','slow'].forEach(id => $(id).addEventListener('input', () => {
     syncOutputs();

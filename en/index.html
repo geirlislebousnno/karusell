@@ -92,6 +92,12 @@ button.primary{background:var(--ground);border-color:var(--ground);color:#fff}
 button:hover{filter:brightness(1.06)}
 button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--onwheel);outline-offset:2px}
 .check{display:flex;align-items:center;gap:8px;font-size:14px}
+.modewrap{display:flex;flex-direction:column;gap:6px}
+.modelabel{font-weight:500}
+.seg{display:flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.seg button{flex:1 1 0;border:0;border-radius:0;padding:8px 10px;font-size:13.5px;background:var(--panel);color:var(--muted)}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
 dl{margin:0;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px}
 dt{color:var(--muted);font-size:13.5px}
 dd{margin:0;font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right}
@@ -140,6 +146,13 @@ footer a{color:inherit}
 
   <div class="bench">
     <section class="controls" aria-label="Settings">
+      <div class="modewrap">
+        <span class="modelabel" id="modeL">Throw direction</span>
+        <div class="seg" role="group" aria-labelledby="modeL">
+          <button type="button" id="modeIn" aria-pressed="true">From the edge inwards</button>
+          <button type="button" id="modeOut" aria-pressed="false">From the centre outwards</button>
+        </div>
+      </div>
       <div class="ctrl">
         <label for="omega">Angular velocity ω</label><output id="omegaOut" for="omega"></output>
         <input id="omega" type="range" min="-1.5" max="1.5" step="0.05" value="0.6">
@@ -152,7 +165,7 @@ footer a{color:inherit}
       <div class="ctrl">
         <label for="aim">Aim angle</label><output id="aimOut" for="aim"></output>
         <input id="aim" type="range" min="-60" max="60" step="1" value="0">
-        <small>0° points straight at the centre. Try aiming so the ball hits the centre.</small>
+        <small id="aimH">0° points straight at the centre. Try aiming so the ball hits the centre.</small>
       </div>
       <div class="ctrl">
         <label for="slow">Playback speed</label><output id="slowOut" for="slow"></output>
@@ -172,9 +185,10 @@ footer a{color:inherit}
         <dt>Ball’s speed over the ground</dt><dd id="rV">–</dd>
         <dt>Rim speed ωR</dt><dd id="rRim">–</dd>
         <dt>Coriolis acceleration 2ωv</dt><dd id="rCor">–</dd>
-        <dt>Closest distance to centre</dt><dd id="rMiss">–</dd>
+        <dt id="rMissL">Closest distance to centre</dt><dd id="rMiss">–</dd>
       </dl>
-      <p class="explain">When the ball is released it carries both the inward throw speed and the sideways speed of the rim (<b>ωR</b>). Over the ground it therefore travels in a straight, slanted line. Seen from the merry-go-round, it looks as if a sideways force, the <b>Coriolis force</b>, bends the path. It acts towards the thrower’s right when the platform turns anticlockwise, as in the Northern Hemisphere.</p>
+      <p class="explain" id="explainIn">When the ball is released it carries both the inward throw speed and the sideways speed of the rim (<b>ωR</b>). Over the ground it therefore travels in a straight, slanted line. Seen from the merry-go-round, it looks as if a sideways force, the <b>Coriolis force</b>, bends the path. It acts towards the thrower’s right when the platform turns anticlockwise, as in the Northern Hemisphere.</p>
+      <p class="explain" id="explainOut" hidden>At the centre the merry-go-round has no speed, so the ball moves straight outwards over the ground. While the ball travels, the catcher moves with the rim. Seen from the merry-go-round, the path bends into a spiral, because the <b>Coriolis force</b> acts towards the thrower’s right when the platform turns anticlockwise. To hit, the thrower must aim <b>ωR/v</b> radians ahead of the catcher.</p>
     </section>
   </div>
 
@@ -190,6 +204,7 @@ footer a{color:inherit}
     <section>
       <h2>Why does the path curve?</h2>
       <p>When the ball is released it has the rim’s sideways speed ωR in addition to the throw speed. Over the ground it then moves in a straight line. The thrower follows the platform around a circle and keeps turning to the left when it rotates anticlockwise. From the thrower’s point of view, the ball therefore drifts to the right.</p>
+      <p>When the ball is thrown from the centre outwards, it gets no sideways speed, because the platform is at rest at the centre. Over the ground the ball moves straight out along a radius while the catcher on the rim moves on. Seen from the merry-go-round, the path becomes a spiral. Here the deflection is a pure Coriolis effect, with no contribution from the rim speed.</p>
       <p>The radius of curvature in the rotating frame is roughly v/(2ω), so a slow throw or fast rotation gives a tighter curve. On the merry-go-round the centrifugal force mω²r also acts outwards. It makes the trace drift outwards, which is why it forms a loop rather than a clean circle.</p>
     </section>
     <section>
@@ -202,7 +217,8 @@ footer a{color:inherit}
       <h2>Try it yourself</h2>
       <ul>
         <li>Adjust the aim angle so the ball hits the centre at ω = 0.6 rad/s and v = 4 m/s. Calculate the angle first, then check it in the simulation. <span class="hint">Hint: the sideways component of the throw must cancel the rim speed ωR.</span></li>
-        <li>Lower the throw speed to 1–2 m/s. Why does the trace form a loop?</li>
+        <li>Choose “From the centre outwards”. How many degrees ahead of the catcher must you aim to hit at ω = 0.6 rad/s and v = 4 m/s? <span class="hint">Hint: the ball takes t = R/v to reach the rim. How far has the catcher turned in that time?</span></li>
+        <li>Lower the throw speed to 1–2 m/s. Why does the trace form a loop when thrown from the edge, but not from the centre?</li>
         <li>Set ω to a negative value. The path now curves to the left, as in the Southern Hemisphere.</li>
         <li>Set ω = 0. The path is straight in both views.</li>
         <li>Double ω and watch how the Coriolis acceleration and the curvature change.</li>
@@ -219,7 +235,7 @@ footer a{color:inherit}
 
 <script>
 (() => {
-  const T = {"dec": ".", "ccw": "anticlockwise", "cw": "clockwise", "still": "at rest", "left": "left", "right": "right", "straight": "straight", "pause": "Pause", "resume": "Resume"};
+  const T = {"missIn": "Closest distance to centre", "missOut": "Miss at the rim", "aimHIn": "0° points straight at the centre. Try aiming so the ball hits the centre.", "aimHOut": "0° points straight at the catcher on the rim. Try aiming so the ball hits the catcher.", "dec": ".", "ccw": "anticlockwise", "cw": "clockwise", "still": "at rest", "left": "left", "right": "right", "straight": "straight", "pause": "Pause", "resume": "Resume"};
   const t = k => T[k];
   const R = 5;
   const $ = id => document.getElementById(id);
@@ -227,21 +243,32 @@ footer a{color:inherit}
   const ctxG = cvG.getContext('2d'), ctxW = cvW.getContext('2d');
   const fmt = (x, d=2) => x.toFixed(d).replace('.', t('dec')).replace('-', '−');
 
-  const S = { theta: 0, omega: +$('omega').value, paused: false, throws: [], active: null };
+  // mode: 'in' = fra kanten mot sentrum, 'out' = fra sentrum mot kanten
+  const S = { theta: 0, omega: +$('omega').value, paused: false, throws: [], active: null, mode: 'in' };
+  const wrap = a => Math.atan2(Math.sin(a), Math.cos(a));
 
   function css(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
 
   function makeThrow(){
     const omega = +$('omega').value, v = +$('speed').value, aim = +$('aim').value * Math.PI/180;
     S.omega = omega;
-    const th0 = S.theta;
+    const th0 = S.theta;   // kasteren/mottakeren står ved hjulvinkel 0, som på bakken er th0
+    if (S.mode === 'out') {
+      // Fra sentrum: ingen kantfart (ω × 0 = 0), ballen går rett utover i sikteretningen.
+      // Positiv sikte = kasterens venstre = foran mottakeren når karusellen går mot klokka.
+      const dir = th0 + aim;
+      const u = [v*Math.cos(dir), v*Math.sin(dir)];
+      // Ballen krysser kanten etter t = R/v; da har karusellen dreid ωR/v.
+      const miss = R * Math.abs(wrap(aim - omega*R/v));
+      return { mode: 'out', p0: [0, 0], u, t: 0, done: false, ground: [[0, 0]], local: [], miss, speed: v };
+    }
     const p0 = [R*Math.cos(th0), R*Math.sin(th0)];
     const inward = th0 + Math.PI + aim;             // positiv sikte = kasterens venstre
     const vr = [v*Math.cos(inward), v*Math.sin(inward)];
     const u = [vr[0] - omega*p0[1], vr[1] + omega*p0[0]];   // + ω × r
     const speed = Math.hypot(u[0], u[1]);
     const miss = Math.abs(p0[0]*u[1] - p0[1]*u[0]) / speed;
-    return { p0, u, t: 0, done: false, ground: [p0.slice()], local: [], miss, speed };
+    return { mode: 'in', p0, u, t: 0, done: false, ground: [p0.slice()], local: [], miss, speed };
   }
 
   function toWheel(p, theta){
@@ -288,11 +315,19 @@ footer a{color:inherit}
       const a = rot + k*Math.PI/18, r1 = k%3===0 ? R-0.3 : R-0.15;
       ctx.beginPath(); ctx.moveTo(r1*Math.cos(a), r1*Math.sin(a)); ctx.lineTo(R*Math.cos(a), R*Math.sin(a)); ctx.stroke();
     }
-    ctx.fillStyle = css('--fg');
-    ctx.beginPath(); ctx.arc(0,0,4*px,0,Math.PI*2); ctx.fill();
-    ctx.strokeStyle = css('--fg'); ctx.lineWidth = 1*px;
-    ctx.beginPath(); ctx.arc(0,0,0.35,0,Math.PI*2); ctx.stroke();
-    ctx.beginPath(); ctx.arc((R+0.35)*Math.cos(rot),(R+0.35)*Math.sin(rot),0.28,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = css('--fg'); ctx.strokeStyle = css('--fg'); ctx.lineWidth = 1*px;
+    const mark = (x, y) => {   // merke: ring med prikk, brukt for sentrum og mottaker
+      ctx.beginPath(); ctx.arc(x,y,4*px,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(x,y,0.35,0,Math.PI*2); ctx.stroke();
+    };
+    const ex = Math.cos(rot), ey = Math.sin(rot);
+    if (S.mode === 'out') {
+      mark(R*ex, R*ey);                                   // mottaker på kanten
+      ctx.beginPath(); ctx.arc(0,0,0.28,0,Math.PI*2); ctx.fill();   // kaster i sentrum
+    } else {
+      mark(0, 0);
+      ctx.beginPath(); ctx.arc((R+0.35)*ex,(R+0.35)*ey,0.28,0,Math.PI*2); ctx.fill();
+    }
     ctx.restore();
   }
 
@@ -330,7 +365,10 @@ footer a{color:inherit}
 
     px = setupCanvas(cvW, ctxW);
     drawWheel(ctxW, 0, px);
-    polyline(ctxW, [[R,0],[R - 2*R*Math.cos(aimRad), -2*R*Math.sin(aimRad)]], cG, 1.4, px, 0, [6,5]);
+    if (S.mode === 'out')
+      polyline(ctxW, [[0,0],[1.2*R*Math.cos(aimRad), 1.2*R*Math.sin(aimRad)]], cG, 1.4, px, 0, [6,5]);
+    else
+      polyline(ctxW, [[R,0],[R - 2*R*Math.cos(aimRad), -2*R*Math.sin(aimRad)]], cG, 1.4, px, 0, [6,5]);
     S.throws.forEach(tr => polyline(ctxW, tr.local, cW, tr === S.active ? 2.6 : 1.6, px));
     if (S.active && S.active.local.length && !S.active.done) ball(ctxW, S.active.local[S.active.local.length-1], px);
 
@@ -361,6 +399,19 @@ footer a{color:inherit}
     $('aimOut').textContent = aim === 0 ? '0° · ' + t('straight') : Math.abs(aim) + '° ' + (aim > 0 ? t('left') : t('right'));
     $('slowOut').textContent = fmt(+$('slow').value) + '×';
   }
+
+  function setMode(m){
+    S.mode = m;
+    $('modeIn').setAttribute('aria-pressed', m === 'in');
+    $('modeOut').setAttribute('aria-pressed', m === 'out');
+    $('rMissL').textContent = m === 'out' ? t('missOut') : t('missIn');
+    $('aimH').textContent = m === 'out' ? t('aimHOut') : t('aimHIn');
+    $('explainIn').hidden = m === 'out';
+    $('explainOut').hidden = m !== 'out';
+    if (S.active && S.active.done && S.active.mode !== m) S.active = null;   // måleverdiene tilhører forrige kasttype
+  }
+  $('modeIn').addEventListener('click', () => setMode('in'));
+  $('modeOut').addEventListener('click', () => setMode('out'));
 
   ['omega','speed','aim','slow'].forEach(id => $(id).addEventListener('input', () => {
     syncOutputs();
