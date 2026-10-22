@@ -337,7 +337,9 @@ footer a{color:inherit}
     if (S.active && S.active.pos && !S.active.done) ball(ctxG, S.active.pos, px);
 
     px = setupCanvas(cvW, ctxW);
-    ctxW.rotate(-Math.PI/2);   // vri visningen 90° med klokka: kasteren står nederst
+    // vri visningen slik at kastet alltid går oppover: fra kanten står kasteren nederst,
+    // fra sentrum står mottakeren øverst
+    ctxW.rotate(S.mode === 'out' ? Math.PI/2 : -Math.PI/2);
     drawWheel(ctxW, 0, px);
     if (S.mode === 'out')
       polyline(ctxW, [[0,0],[1.2*R*Math.cos(aimRad), 1.2*R*Math.sin(aimRad)]], cG, 1.4, px, 0, [6,5]);
@@ -375,14 +377,14 @@ footer a{color:inherit}
   }
 
   function setMode(m){
-    S.mode = m;
     $('modeIn').setAttribute('aria-pressed', m === 'in');
     $('modeOut').setAttribute('aria-pressed', m === 'out');
     $('rMissL').textContent = m === 'out' ? t('missOut') : t('missIn');
     $('aimH').textContent = m === 'out' ? t('aimHOut') : t('aimHIn');
     $('explainIn').hidden = m === 'out';
     $('explainOut').hidden = m !== 'out';
-    if (S.active && S.active.done && S.active.mode !== m) S.active = null;   // måleverdiene tilhører forrige kasttype
+    if (m !== S.mode) { S.throws = []; S.active = null; }   // spor fra den andre kasttypen passer ikke i den nye visningen
+    S.mode = m;
   }
   $('modeIn').addEventListener('click', () => setMode('in'));
   $('modeOut').addEventListener('click', () => setMode('out'));
