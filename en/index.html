@@ -364,6 +364,7 @@ footer a{color:inherit}
     if (S.active && S.active.pos && !S.active.done) ball(ctxG, S.active.pos, px);
 
     px = setupCanvas(cvW, ctxW);
+    ctxW.rotate(-Math.PI/2);   // vri visningen 90° med klokka: kasteren står nederst
     drawWheel(ctxW, 0, px);
     if (S.mode === 'out')
       polyline(ctxW, [[0,0],[1.2*R*Math.cos(aimRad), 1.2*R*Math.sin(aimRad)]], cG, 1.4, px, 0, [6,5]);
