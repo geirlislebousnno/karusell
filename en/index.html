@@ -92,6 +92,7 @@ button.primary{background:var(--ground);border-color:var(--ground);color:#fff}
 button:hover{filter:brightness(1.06)}
 button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--onwheel);outline-offset:2px}
 .check{display:flex;align-items:center;gap:8px;font-size:14px}
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;padding-bottom:14px;border-bottom:1px solid var(--line)}
 .modewrap{display:flex;flex-direction:column;gap:6px}
 .modelabel{font-weight:500}
 .seg{display:flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}
@@ -146,6 +147,14 @@ footer a{color:inherit}
 
   <div class="bench">
     <section class="controls" aria-label="Settings">
+      <div class="toolbar">
+        <div class="buttons">
+          <button class="primary" id="throwBtn">Throw the ball</button>
+          <button id="pauseBtn">Pause</button>
+          <button id="clearBtn">Clear traces</button>
+        </div>
+        <label class="check"><input id="keep" type="checkbox" checked> Keep earlier traces</label>
+      </div>
       <div class="modewrap">
         <span class="modelabel" id="modeL">Throw direction</span>
         <div class="seg" role="group" aria-labelledby="modeL">
@@ -170,12 +179,6 @@ footer a{color:inherit}
       <div class="ctrl">
         <label for="slow">Playback speed</label><output id="slowOut" for="slow"></output>
         <input id="slow" type="range" min="0.25" max="2" step="0.25" value="1">
-      </div>
-      <label class="check"><input id="keep" type="checkbox" checked> Keep earlier traces</label>
-      <div class="buttons">
-        <button class="primary" id="throwBtn">Throw the ball</button>
-        <button id="pauseBtn">Pause</button>
-        <button id="clearBtn">Clear traces</button>
       </div>
     </section>
 
