@@ -15,14 +15,17 @@ Egnet for undervisning i fysikk (videregående og universitet), meteorologi og o
 
 ## English
 
-A person standing at the edge of a rotating merry-go-round rolls a ball towards the centre. The simulation shows the throw side by side in the **inertial frame** (straight path) and the **rotating frame** (curved path caused by the Coriolis effect). Switch language with the NO/EN button, or link directly with `?lang=en`:
-https://geirlislebousnno.github.io/karusell/?lang=en
+A person standing at the edge of a rotating merry-go-round rolls a ball towards the centre. The simulation shows the throw side by side in the **inertial frame** (straight path) and the **rotating frame** (curved path caused by the Coriolis effect). English version: https://geirlislebousnno.github.io/karusell/en/
 
 ## Bruk / Usage
 
 Simuleringen er én selvstendig HTML-fil (`index.html`) uten avhengigheter utover skrifttyper fra Google Fonts. Den kan lastes ned og åpnes lokalt, eller bygges inn i et LMS.
 
 The simulation is a single self-contained HTML file. Download it and open it in any browser, or embed it in your learning platform.
+
+## Redigering / Editing
+
+Sidene bygges fra `src/template.html` og tekstene i `src/build.py`. Endre teksten der og kjør `python3 src/build.py` for å oppdatere `index.html` (norsk) og `en/index.html` (engelsk).
 
 ## Fysikken / The physics
 

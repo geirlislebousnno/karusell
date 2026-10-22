@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Coriolis effect – throwing a ball on a merry-go-round (interactive simulation)</title>
+<meta name="description" content="Interactive Coriolis effect simulation. A ball is thrown from the edge of a rotating merry-go-round towards the centre, shown side by side from the ground (inertial frame) and from the merry-go-round (rotating reference frame).">
+<meta name="author" content="Geir Lislebo">
+<link rel="canonical" href="https://geirlislebousnno.github.io/karusell/en/">
+<link rel="alternate" hreflang="nb" href="https://geirlislebousnno.github.io/karusell/">
+<link rel="alternate" hreflang="en" href="https://geirlislebousnno.github.io/karusell/en/">
+<link rel="alternate" hreflang="x-default" href="https://geirlislebousnno.github.io/karusell/en/">
+<meta property="og:url" content="https://geirlislebousnno.github.io/karusell/en/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Throwing a ball on a merry-go-round – see the Coriolis effect">
+<meta property="og:description" content="Throw a ball on a rotating merry-go-round and compare its path from the ground and from the platform. Free simulation for physics teaching.">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary">
+<meta name="color-scheme" content="light dark">
+<link rel="license" href="https://creativecommons.org/licenses/by/4.0/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23e3e8ee' stroke='%232457c5' stroke-width='2'/%3E%3Cpath d='M29 16 Q16 14 16 16' fill='none' stroke='%23c2185b' stroke-width='2.5'/%3E%3Ccircle cx='16' cy='16' r='2' fill='%231b2430'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "Throwing a ball on a merry-go-round",
+  "description": "Interactive Coriolis effect simulation. A ball is thrown from the edge of a rotating merry-go-round towards the centre, shown side by side from the ground (inertial frame) and from the merry-go-round (rotating reference frame).",
+  "url": "https://geirlislebousnno.github.io/karusell/en/",
+  "author": { "@type": "Person", "name": "Geir Lislebo" },
+  "inLanguage": "en",
+  "learningResourceType": "Simulation",
+  "about": ["Coriolis effect", "Coriolis force", "Rotating reference frame", "Inertial frame"],
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "isAccessibleForFree": true
+}
+</script>
+
+<style>
+/* Layout: lab bench — two synchronized views side by side, controls rail beneath, readouts in mono; explanatory article below */
+:root{
+  --bg:#eef1f4; --panel:#ffffff; --fg:#1b2430; --muted:#5d6b7c; --line:#d3d9e1;
+  --wheel:#e3e8ee; --wheel-edge:#8a97a8; --spoke:#c3ccd7;
+  --ground:#2457c5; --onwheel:#c2185b; --ball:#f2a20c; --ball-edge:#8a5a00;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Consolas, monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root{
+  --bg:#12171e; --panel:#1a212b; --fg:#e6ebf1; --muted:#97a4b5; --line:#2c3644;
+  --wheel:#222b37; --wheel-edge:#6f7e92; --spoke:#323d4c;
+  --ground:#6f9cff; --onwheel:#ff5c9a; --ball:#ffb52e; --ball-edge:#ffe2a8; color-scheme:dark }}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5}
+.wrap{max-width:1120px;margin:0 auto;padding-block:28px 32px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:flex;flex-direction:column;gap:20px}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+header>div{min-width:0;flex:1 1 420px}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(26px,4vw,38px);line-height:1.1;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.lede{margin:6px 0 0;color:var(--muted);max-width:68ch}
+.lang{display:flex;border:1px solid var(--line);border-radius:7px;overflow:hidden;flex:none}
+.lang a,.lang span{padding:6px 12px;font-family:var(--mono);font-size:13px;text-decoration:none;color:var(--muted);background:var(--panel)}
+.lang span{background:var(--fg);color:var(--bg)}
+.lang a:hover{color:var(--fg)}
+.views{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.views{grid-template-columns:1fr}}
+figure{margin:0;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+figcaption{display:flex;flex-direction:column;gap:2px}
+.tag{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.ftitle{font-family:var(--display);font-weight:500;font-size:19px}
+canvas{width:100%;aspect-ratio:1/1;max-width:100%;display:block}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:18px;height:3px;border-radius:2px;display:inline-block}
+.sw.dash{background:none;border-top:2px dashed var(--ground);height:0}
+.bench{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:16px}
+@media (max-width:760px){.bench{grid-template-columns:1fr}}
+.controls,.readout{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.ctrl{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;align-items:center}
+.ctrl label{font-weight:500}
+.ctrl output{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:14px;text-align:right}
+.ctrl input[type=range]{grid-column:1/-1;width:100%;accent-color:var(--ground)}
+.ctrl small{grid-column:1/-1;color:var(--muted);font-size:12.5px}
+.buttons{display:flex;flex-wrap:wrap;gap:8px}
+button{font:500 14px var(--body);padding:9px 16px;border-radius:7px;border:1px solid var(--line);background:var(--panel);color:var(--fg);cursor:pointer}
+button.primary{background:var(--ground);border-color:var(--ground);color:#fff}
+button:hover{filter:brightness(1.06)}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--onwheel);outline-offset:2px}
+.check{display:flex;align-items:center;gap:8px;font-size:14px}
+dl{margin:0;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px}
+dt{color:var(--muted);font-size:13.5px}
+dd{margin:0;font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right}
+.explain{font-size:13.5px;color:var(--muted);margin:0;border-top:1px solid var(--line);padding-top:12px}
+.explain b{color:var(--fg);font-weight:500}
+article{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 40px;padding-block:16px 4px;border-top:1px solid var(--line)}
+@media (max-width:760px){article{grid-template-columns:1fr}}
+article section{min-width:0;max-width:62ch}
+article h2{font-family:var(--display);font-weight:700;font-size:22px;line-height:1.2;margin:0 0 8px;text-wrap:balance}
+article p{margin:0 0 10px}
+article ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.eq{font-family:var(--mono);font-size:14px;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:6px 10px;display:inline-block}
+.hint{color:var(--muted);font-size:13.5px}
+footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px;display:flex;flex-wrap:wrap;gap:4px 18px}
+footer a{color:inherit}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Throwing a ball on a merry-go-round</h1>
+      <p class="lede">A person stands at the edge of a rotating merry-go-round (radius 5 m) and rolls a ball straight towards the centre. Seen from the ground, the ball moves in a straight line. Seen from the merry-go-round, the path curves, because the platform turns underneath the ball while it travels. This is the Coriolis effect.</p>
+    </div>
+    <nav class="lang" aria-label="Språk / Language"><a href="../" lang="nb" hreflang="nb">NO</a><span aria-current="page" lang="en">EN</span></nav>
+  </header>
+
+  <div class="views">
+    <figure>
+      <figcaption><span class="tag">Inertial frame</span><span class="ftitle">Seen from the ground</span></figcaption>
+      <canvas id="cvGround" role="img" aria-label="The merry-go-round seen from above, from the ground. It rotates and the ball moves in a straight line."></canvas>
+      <div class="legend">
+        <span><i class="sw" style="background:var(--ground)"></i>Ball’s path over the ground</span>
+        <span><i class="sw" style="background:var(--onwheel)"></i>Trace on the platform (rotates with it)</span>
+      </div>
+    </figure>
+    <figure>
+      <figcaption><span class="tag">Rotating reference frame</span><span class="ftitle">Seen from the merry-go-round</span></figcaption>
+      <canvas id="cvWheel" role="img" aria-label="The merry-go-round seen by someone standing on it. It is still and the ball’s trace curves."></canvas>
+      <div class="legend">
+        <span><i class="sw" style="background:var(--onwheel)"></i>Trace on the platform</span>
+        <span><i class="sw dash"></i>Thrower’s line of aim</span>
+      </div>
+    </figure>
+  </div>
+
+  <div class="bench">
+    <section class="controls" aria-label="Settings">
+      <div class="ctrl">
+        <label for="omega">Angular velocity ω</label><output id="omegaOut" for="omega"></output>
+        <input id="omega" type="range" min="-1.5" max="1.5" step="0.05" value="0.6">
+        <small>Positive means anticlockwise. Changes apply from the next throw.</small>
+      </div>
+      <div class="ctrl">
+        <label for="speed">Throw speed relative to the platform</label><output id="speedOut" for="speed"></output>
+        <input id="speed" type="range" min="1" max="15" step="0.5" value="4">
+      </div>
+      <div class="ctrl">
+        <label for="aim">Aim angle</label><output id="aimOut" for="aim"></output>
+        <input id="aim" type="range" min="-60" max="60" step="1" value="0">
+        <small>0° points straight at the centre. Try aiming so the ball hits the centre.</small>
+      </div>
+      <div class="ctrl">
+        <label for="slow">Playback speed</label><output id="slowOut" for="slow"></output>
+        <input id="slow" type="range" min="0.25" max="2" step="0.25" value="1">
+      </div>
+      <label class="check"><input id="keep" type="checkbox" checked> Keep earlier traces</label>
+      <div class="buttons">
+        <button class="primary" id="throwBtn">Throw the ball</button>
+        <button id="pauseBtn">Pause</button>
+        <button id="clearBtn">Clear traces</button>
+      </div>
+    </section>
+
+    <section class="readout" aria-label="Readings">
+      <dl>
+        <dt>Time since throw</dt><dd id="rT"></dd>
+        <dt>Ball’s speed over the ground</dt><dd id="rV">–</dd>
+        <dt>Rim speed ωR</dt><dd id="rRim">–</dd>
+        <dt>Coriolis acceleration 2ωv</dt><dd id="rCor">–</dd>
+        <dt>Closest distance to centre</dt><dd id="rMiss">–</dd>
+      </dl>
+      <p class="explain">When the ball is released it carries both the inward throw speed and the sideways speed of the rim (<b>ωR</b>). Over the ground it therefore travels in a straight, slanted line. Seen from the merry-go-round, it looks as if a sideways force, the <b>Coriolis force</b>, bends the path. It acts towards the thrower’s right when the platform turns anticlockwise, as in the Northern Hemisphere.</p>
+    </section>
+  </div>
+
+  <article>
+
+    <section>
+      <h2>What is the Coriolis effect?</h2>
+      <p>The Coriolis effect is the apparent deflection of a moving object when it is observed from a rotating reference frame, such as a merry-go-round or the Earth. No real force pushes the ball sideways. The deflection appears because the observer is rotating.</p>
+      <p>To describe the motion from the rotating frame, we introduce a fictitious force, the Coriolis force:</p>
+      <p><span class="eq">F = −2m ω × v</span></p>
+      <p>When the velocity is perpendicular to the rotation axis, its magnitude is 2mωv. The force is always perpendicular to the velocity, so it changes the direction of motion but not the speed.</p>
+    </section>
+    <section>
+      <h2>Why does the path curve?</h2>
+      <p>When the ball is released it has the rim’s sideways speed ωR in addition to the throw speed. Over the ground it then moves in a straight line. The thrower follows the platform around a circle and keeps turning to the left when it rotates anticlockwise. From the thrower’s point of view, the ball therefore drifts to the right.</p>
+      <p>The radius of curvature in the rotating frame is roughly v/(2ω), so a slow throw or fast rotation gives a tighter curve. On the merry-go-round the centrifugal force mω²r also acts outwards. It makes the trace drift outwards, which is why it forms a loop rather than a clean circle.</p>
+    </section>
+    <section>
+      <h2>The Coriolis effect on Earth: wind, low pressure and ocean currents</h2>
+      <p>Seen from above the North Pole, the Earth rotates anticlockwise, just like the merry-go-round with positive ω. That is why winds, ocean currents and projectiles are deflected to the right in the Northern Hemisphere and to the left in the Southern Hemisphere.</p>
+      <p>Air and water moving freely travel in clockwise circles in the Northern Hemisphere. These are called inertial oscillations, and they turn the same way as the ball in the simulation. Low-pressure systems still rotate anticlockwise. The pressure force pulls air towards the centre, the Coriolis force bends it to the right, and the air ends up circling the low with the centre on its left. Around a high, air circulates clockwise.</p>
+      <p>The Earth’s angular velocity is only 7.29 × 10⁻⁵ rad/s. The effect matters over large distances and long times, but it does not decide which way water swirls in a sink.</p>
+    </section>
+    <section>
+      <h2>Try it yourself</h2>
+      <ul>
+        <li>Adjust the aim angle so the ball hits the centre at ω = 0.6 rad/s and v = 4 m/s. Calculate the angle first, then check it in the simulation. <span class="hint">Hint: the sideways component of the throw must cancel the rim speed ωR.</span></li>
+        <li>Lower the throw speed to 1–2 m/s. Why does the trace form a loop?</li>
+        <li>Set ω to a negative value. The path now curves to the left, as in the Southern Hemisphere.</li>
+        <li>Set ω = 0. The path is straight in both views.</li>
+        <li>Double ω and watch how the Coriolis acceleration and the curvature change.</li>
+      </ul>
+    </section>
+  </article>
+
+  <footer>
+    <span>Made by Geir Lislebo</span>
+    <span>Licence: <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a></span>
+    <span><a href="https://github.com/geirlislebousnno/karusell">Source code on GitHub</a></span>
+  </footer>
+</div>
+
+<script>
+(() => {
+  const T = {"dec": ".", "ccw": "anticlockwise", "cw": "clockwise", "still": "at rest", "left": "left", "right": "right", "straight": "straight", "pause": "Pause", "resume": "Resume"};
+  const t = k => T[k];
+  const R = 5;
+  const $ = id => document.getElementById(id);
+  const cvG = $('cvGround'), cvW = $('cvWheel');
+  const ctxG = cvG.getContext('2d'), ctxW = cvW.getContext('2d');
+  const fmt = (x, d=2) => x.toFixed(d).replace('.', t('dec')).replace('-', '−');
+
+  const S = { theta: 0, omega: +$('omega').value, paused: false, throws: [], active: null };
+
+  function css(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+  function makeThrow(){
+    const omega = +$('omega').value, v = +$('speed').value, aim = +$('aim').value * Math.PI/180;
+    S.omega = omega;
+    const th0 = S.theta;
+    const p0 = [R*Math.cos(th0), R*Math.sin(th0)];
+    const inward = th0 + Math.PI + aim;             // positiv sikte = kasterens venstre
+    const vr = [v*Math.cos(inward), v*Math.sin(inward)];
+    const u = [vr[0] - omega*p0[1], vr[1] + omega*p0[0]];   // + ω × r
+    const speed = Math.hypot(u[0], u[1]);
+    const miss = Math.abs(p0[0]*u[1] - p0[1]*u[0]) / speed;
+    return { p0, u, t: 0, done: false, ground: [p0.slice()], local: [], miss, speed };
+  }
+
+  function toWheel(p, theta){
+    const c = Math.cos(-theta), s = Math.sin(-theta);
+    return [c*p[0] - s*p[1], s*p[0] + c*p[1]];
+  }
+
+  function step(dt){
+    S.theta += S.omega*dt;
+    const a = S.active;
+    if (!a || a.done) return;
+    a.t += dt;
+    const p = [a.p0[0] + a.u[0]*a.t, a.p0[1] + a.u[1]*a.t];
+    a.ground.push(p);
+    a.local.push(toWheel(p, S.theta));
+    a.pos = p;
+    if (Math.hypot(p[0], p[1]) > R*1.25 || a.t > 30) a.done = true;
+  }
+
+  function setupCanvas(cv, ctx){
+    const dpr = window.devicePixelRatio || 1;
+    const w = cv.clientWidth;
+    if (cv.width !== Math.round(w*dpr)) { cv.width = Math.round(w*dpr); cv.height = Math.round(w*dpr); }
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.clearRect(0,0,cv.width,cv.height);
+    const s = cv.width / (2*R*1.3);
+    ctx.setTransform(s,0,0,-s,cv.width/2,cv.height/2);
+    return 1/s;
+  }
+
+  function drawWheel(ctx, rot, px){
+    ctx.save();
+    ctx.fillStyle = css('--wheel'); ctx.strokeStyle = css('--wheel-edge');
+    ctx.lineWidth = 2.5*px;
+    ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.strokeStyle = css('--spoke'); ctx.lineWidth = 1.2*px;
+    for (let r=1; r<R; r++){ ctx.beginPath(); ctx.arc(0,0,r,0,Math.PI*2); ctx.stroke(); }
+    for (let k=0;k<12;k++){
+      const a = rot + k*Math.PI/6;
+      ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(R*Math.cos(a), R*Math.sin(a)); ctx.stroke();
+    }
+    ctx.strokeStyle = css('--wheel-edge'); ctx.lineWidth = 1.5*px;
+    for (let k=0;k<36;k++){
+      const a = rot + k*Math.PI/18, r1 = k%3===0 ? R-0.3 : R-0.15;
+      ctx.beginPath(); ctx.moveTo(r1*Math.cos(a), r1*Math.sin(a)); ctx.lineTo(R*Math.cos(a), R*Math.sin(a)); ctx.stroke();
+    }
+    ctx.fillStyle = css('--fg');
+    ctx.beginPath(); ctx.arc(0,0,4*px,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle = css('--fg'); ctx.lineWidth = 1*px;
+    ctx.beginPath(); ctx.arc(0,0,0.35,0,Math.PI*2); ctx.stroke();
+    ctx.beginPath(); ctx.arc((R+0.35)*Math.cos(rot),(R+0.35)*Math.sin(rot),0.28,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+
+  function polyline(ctx, pts, color, w, px, rot=0, dash=null){
+    if (pts.length < 2) return;
+    ctx.save();
+    ctx.rotate(rot);
+    ctx.strokeStyle = color; ctx.lineWidth = w*px; ctx.lineJoin = 'round'; ctx.lineCap='round';
+    if (dash) ctx.setLineDash(dash.map(d=>d*px));
+    ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
+    for (let i=1;i<pts.length;i++) ctx.lineTo(pts[i][0], pts[i][1]);
+    ctx.stroke(); ctx.restore();
+  }
+
+  function ball(ctx, p, px){
+    ctx.save();
+    ctx.fillStyle = css('--ball'); ctx.strokeStyle = css('--ball-edge'); ctx.lineWidth = 1.5*px;
+    ctx.beginPath(); ctx.arc(p[0], p[1], 0.22, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.restore();
+  }
+
+  function draw(){
+    const cG = css('--ground'), cW = css('--onwheel');
+    const aimRad = +$('aim').value*Math.PI/180;
+
+    let px = setupCanvas(cvG, ctxG);
+    drawWheel(ctxG, S.theta, px);
+    // sporene på hjulet beholdes; banen over bakken vises bare for siste kast
+    S.throws.forEach(tr => {
+      const cur = tr === S.active;
+      polyline(ctxG, tr.local, cW, cur ? 2.6 : 1.6, px, S.theta);
+      if (cur) polyline(ctxG, tr.ground, cG, 2.4, px);
+    });
+    if (S.active && S.active.pos && !S.active.done) ball(ctxG, S.active.pos, px);
+
+    px = setupCanvas(cvW, ctxW);
+    drawWheel(ctxW, 0, px);
+    polyline(ctxW, [[R,0],[R - 2*R*Math.cos(aimRad), -2*R*Math.sin(aimRad)]], cG, 1.4, px, 0, [6,5]);
+    S.throws.forEach(tr => polyline(ctxW, tr.local, cW, tr === S.active ? 2.6 : 1.6, px));
+    if (S.active && S.active.local.length && !S.active.done) ball(ctxW, S.active.local[S.active.local.length-1], px);
+
+    const a = S.active;
+    $('rT').textContent = fmt(a ? a.t : 0) + ' s';
+    $('rV').textContent = a ? fmt(a.speed) + ' m/s' : '–';
+    $('rRim').textContent = fmt(Math.abs(+$('omega').value)*R) + ' m/s';
+    $('rCor').textContent = fmt(2*Math.abs(+$('omega').value)*(+$('speed').value)) + ' m/s²';
+    $('rMiss').textContent = a ? fmt(a.miss) + ' m' : '–';
+  }
+
+  function throwBall(){
+    if (!$('keep').checked) S.throws = [];
+    S.theta = S.theta % (2*Math.PI);
+    const tr = makeThrow();
+    tr.local = [toWheel(tr.p0, S.theta)];
+    S.throws.push(tr); S.active = tr;
+    if (S.throws.length > 8) S.throws.shift();
+    S.paused = false; syncPause();
+  }
+
+  function syncPause(){ $('pauseBtn').textContent = S.paused ? t('resume') : t('pause'); }
+
+  function syncOutputs(){
+    const w = +$('omega').value, aim = +$('aim').value;
+    $('omegaOut').textContent = fmt(w) + ' rad/s · ' + (w > 0 ? t('ccw') : w < 0 ? t('cw') : t('still'));
+    $('speedOut').textContent = fmt(+$('speed').value,1) + ' m/s';
+    $('aimOut').textContent = aim === 0 ? '0° · ' + t('straight') : Math.abs(aim) + '° ' + (aim > 0 ? t('left') : t('right'));
+    $('slowOut').textContent = fmt(+$('slow').value) + '×';
+  }
+
+  ['omega','speed','aim','slow'].forEach(id => $(id).addEventListener('input', () => {
+    syncOutputs();
+    if (id === 'omega' && (!S.active || S.active.done)) S.omega = +$('omega').value;
+  }));
+  $('throwBtn').addEventListener('click', throwBall);
+  $('pauseBtn').addEventListener('click', () => { S.paused = !S.paused; syncPause(); });
+  $('clearBtn').addEventListener('click', () => { S.throws = []; S.active = null; });
+
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let last = performance.now();
+  function loop(now){
+    let dt = Math.min(0.05, (now-last)/1000); last = now;
+    if (!S.paused){
+      dt *= +$('slow').value * (reduce ? 0.5 : 1);
+      for (let i=0;i<4;i++) step(dt/4);
+    }
+    draw();
+    requestAnimationFrame(loop);
+  }
+
+  syncOutputs();
+  S.theta = 0;
+  throwBall();
+  for (let i=0;i<2000 && !S.active.done;i++) step(0.01);
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

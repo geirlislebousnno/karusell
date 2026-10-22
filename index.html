@@ -3,42 +3,43 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Ballkast på karusellen – corioliseffekten i et roterende hjul</title>
-<meta name="description" content="Interaktiv simulering av corioliseffekten: en ball kastes fra kanten av et roterende hjul mot sentrum. Se banen samtidig fra bakken (treghetssystem) og fra hjulet (roterende referansesystem). Coriolis effect simulation on a merry-go-round.">
+<title>Corioliseffekten – ballkast på karusellen (interaktiv simulering)</title>
+<meta name="description" content="Interaktiv simulering av corioliseffekten. En ball kastes fra kanten av en roterende karusell mot sentrum, og banen vises samtidig fra bakken (treghetssystem) og fra karusellen (roterende referansesystem).">
 <meta name="author" content="Geir Lislebo">
-<meta name="keywords" content="corioliseffekt, corioliskraft, roterende referansesystem, treghetssystem, karusell, fysikk, simulering, Coriolis effect, Coriolis force, rotating reference frame, merry-go-round, physics simulation">
 <link rel="canonical" href="https://geirlislebousnno.github.io/karusell/">
+<link rel="alternate" hreflang="nb" href="https://geirlislebousnno.github.io/karusell/">
+<link rel="alternate" hreflang="en" href="https://geirlislebousnno.github.io/karusell/en/">
+<link rel="alternate" hreflang="x-default" href="https://geirlislebousnno.github.io/karusell/en/">
 <meta property="og:url" content="https://geirlislebousnno.github.io/karusell/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Ballkast på karusellen – corioliseffekten">
-<meta property="og:description" content="Kast en ball fra kanten av et roterende hjul og se banen fra bakken og fra hjulet side om side. Interactive Coriolis effect simulation.">
+<meta property="og:title" content="Ballkast på karusellen – se corioliseffekten">
+<meta property="og:description" content="Kast en ball på en roterende karusell og se banen fra bakken og fra karusellen side om side. Gratis simulering for fysikkundervisning.">
 <meta property="og:locale" content="nb_NO">
-<meta property="og:locale:alternate" content="en_GB">
 <meta name="twitter:card" content="summary">
 <meta name="color-scheme" content="light dark">
 <link rel="license" href="https://creativecommons.org/licenses/by/4.0/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23e3e8ee' stroke='%232457c5' stroke-width='2'/%3E%3Cpath d='M29 16 Q16 14 16 16' fill='none' stroke='%23c2185b' stroke-width='2.5'/%3E%3Ccircle cx='16' cy='16' r='2' fill='%231b2430'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "LearningResource",
   "name": "Ballkast på karusellen",
-  "alternateName": "Throwing a ball on a merry-go-round",
-  "description": "Interaktiv simulering av corioliseffekten i et roterende referansesystem.",
+  "description": "Interaktiv simulering av corioliseffekten. En ball kastes fra kanten av en roterende karusell mot sentrum, og banen vises samtidig fra bakken (treghetssystem) og fra karusellen (roterende referansesystem).",
+  "url": "https://geirlislebousnno.github.io/karusell/",
   "author": { "@type": "Person", "name": "Geir Lislebo" },
-  "inLanguage": ["nb", "en"],
+  "inLanguage": "nb",
   "learningResourceType": "Simulation",
-  "about": ["Corioliseffekt", "Coriolis effect", "Rotating reference frame"],
+  "about": ["Corioliseffekten", "Corioliskraft", "Roterende referansesystem", "Treghetssystem"],
   "license": "https://creativecommons.org/licenses/by/4.0/",
-  "isAccessibleForFree": true,
-  "url": "https://geirlislebousnno.github.io/karusell/"
+  "isAccessibleForFree": true
 }
 </script>
+<script>try{if(new URLSearchParams(location.search).get('lang')==='en')location.replace('en/')}catch(e){}</script>
 <style>
-/* Layout: lab bench — two synchronized views side by side, controls rail beneath, readouts in mono */
+/* Layout: lab bench — two synchronized views side by side, controls rail beneath, readouts in mono; explanatory article below */
 :root{
   --bg:#eef1f4; --panel:#ffffff; --fg:#1b2430; --muted:#5d6b7c; --line:#d3d9e1;
   --wheel:#e3e8ee; --wheel-edge:#8a97a8; --spoke:#c3ccd7;
@@ -63,8 +64,9 @@ header>div{min-width:0;flex:1 1 420px}
 h1{font-family:var(--display);font-weight:700;font-size:clamp(26px,4vw,38px);line-height:1.1;margin:0;text-wrap:balance;letter-spacing:-.01em}
 .lede{margin:6px 0 0;color:var(--muted);max-width:68ch}
 .lang{display:flex;border:1px solid var(--line);border-radius:7px;overflow:hidden;flex:none}
-.lang button{border:0;border-radius:0;padding:6px 12px;font-family:var(--mono);font-size:13px;background:var(--panel);color:var(--muted)}
-.lang button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+.lang a,.lang span{padding:6px 12px;font-family:var(--mono);font-size:13px;text-decoration:none;color:var(--muted);background:var(--panel)}
+.lang span{background:var(--fg);color:var(--bg)}
+.lang a:hover{color:var(--fg)}
 .views{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media (max-width:760px){.views{grid-template-columns:1fr}}
 figure{margin:0;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:8px;min-width:0}
@@ -88,13 +90,21 @@ canvas{width:100%;aspect-ratio:1/1;max-width:100%;display:block}
 button{font:500 14px var(--body);padding:9px 16px;border-radius:7px;border:1px solid var(--line);background:var(--panel);color:var(--fg);cursor:pointer}
 button.primary{background:var(--ground);border-color:var(--ground);color:#fff}
 button:hover{filter:brightness(1.06)}
-button:focus-visible,input:focus-visible{outline:2px solid var(--onwheel);outline-offset:2px}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--onwheel);outline-offset:2px}
 .check{display:flex;align-items:center;gap:8px;font-size:14px}
 dl{margin:0;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px}
 dt{color:var(--muted);font-size:13.5px}
 dd{margin:0;font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right}
 .explain{font-size:13.5px;color:var(--muted);margin:0;border-top:1px solid var(--line);padding-top:12px}
 .explain b{color:var(--fg);font-weight:500}
+article{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 40px;padding-block:16px 4px;border-top:1px solid var(--line)}
+@media (max-width:760px){article{grid-template-columns:1fr}}
+article section{min-width:0;max-width:62ch}
+article h2{font-family:var(--display);font-weight:700;font-size:22px;line-height:1.2;margin:0 0 8px;text-wrap:balance}
+article p{margin:0 0 10px}
+article ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.eq{font-family:var(--mono);font-size:14px;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:6px 10px;display:inline-block}
+.hint{color:var(--muted);font-size:13.5px}
 footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px;display:flex;flex-wrap:wrap;gap:4px 18px}
 footer a{color:inherit}
 </style>
@@ -103,139 +113,118 @@ footer a{color:inherit}
 <div class="wrap">
   <header>
     <div>
-      <h1 data-i18n="title">Ballkast på karusellen</h1>
-      <p class="lede" data-i18n="lede"></p>
+      <h1>Ballkast på karusellen</h1>
+      <p class="lede">En person står på kanten av en roterende karusell (radius 5 m) og triller en ball rett mot sentrum. Sett fra bakken går ballen i en rett linje. Sett fra karusellen bøyer banen av, fordi karusellen dreier seg under ballen mens den er underveis. Det er corioliseffekten.</p>
     </div>
-    <div class="lang" role="group" aria-label="Språk / Language">
-      <button type="button" id="langNb" lang="nb">NO</button>
-      <button type="button" id="langEn" lang="en">EN</button>
-    </div>
+    <nav class="lang" aria-label="Språk / Language"><span aria-current="page" lang="nb">NO</span><a href="en/" lang="en" hreflang="en">EN</a></nav>
   </header>
 
   <div class="views">
     <figure>
-      <figcaption><span class="tag" data-i18n="gTag"></span><span class="ftitle" data-i18n="gTitle"></span></figcaption>
-      <canvas id="cvGround" role="img" data-i18n-aria="gAria"></canvas>
+      <figcaption><span class="tag">Treghetssystem</span><span class="ftitle">Sett fra bakken</span></figcaption>
+      <canvas id="cvGround" role="img" aria-label="Karusellen sett ovenfra fra bakken. Karusellen roterer, og ballen går i en rett linje."></canvas>
       <div class="legend">
-        <span><i class="sw" style="background:var(--ground)"></i><span data-i18n="legPath"></span></span>
-        <span><i class="sw" style="background:var(--onwheel)"></i><span data-i18n="legTraceRot"></span></span>
+        <span><i class="sw" style="background:var(--ground)"></i>Ballens bane over bakken</span>
+        <span><i class="sw" style="background:var(--onwheel)"></i>Sporet på karusellen (roterer med)</span>
       </div>
     </figure>
     <figure>
-      <figcaption><span class="tag" data-i18n="wTag"></span><span class="ftitle" data-i18n="wTitle"></span></figcaption>
-      <canvas id="cvWheel" role="img" data-i18n-aria="wAria"></canvas>
+      <figcaption><span class="tag">Roterende referansesystem</span><span class="ftitle">Sett fra karusellen</span></figcaption>
+      <canvas id="cvWheel" role="img" aria-label="Karusellen sett fra en som står på den. Karusellen står stille, og ballens spor bøyer av."></canvas>
       <div class="legend">
-        <span><i class="sw" style="background:var(--onwheel)"></i><span data-i18n="legTrace"></span></span>
-        <span><i class="sw dash"></i><span data-i18n="legAim"></span></span>
+        <span><i class="sw" style="background:var(--onwheel)"></i>Sporet på karusellen</span>
+        <span><i class="sw dash"></i>Siktelinje fra kasteren</span>
       </div>
     </figure>
   </div>
 
   <div class="bench">
-    <section class="controls" data-i18n-aria="settings">
+    <section class="controls" aria-label="Innstillinger">
       <div class="ctrl">
-        <label for="omega" data-i18n="omegaL"></label><output id="omegaOut" for="omega"></output>
+        <label for="omega">Vinkelhastighet ω</label><output id="omegaOut" for="omega"></output>
         <input id="omega" type="range" min="-1.5" max="1.5" step="0.05" value="0.6">
-        <small data-i18n="omegaH"></small>
+        <small>Positiv verdi betyr rotasjon mot klokka. Endringen gjelder fra neste kast.</small>
       </div>
       <div class="ctrl">
-        <label for="speed" data-i18n="speedL"></label><output id="speedOut" for="speed"></output>
+        <label for="speed">Kastefart relativt til karusellen</label><output id="speedOut" for="speed"></output>
         <input id="speed" type="range" min="1" max="15" step="0.5" value="4">
       </div>
       <div class="ctrl">
-        <label for="aim" data-i18n="aimL"></label><output id="aimOut" for="aim"></output>
+        <label for="aim">Siktevinkel</label><output id="aimOut" for="aim"></output>
         <input id="aim" type="range" min="-60" max="60" step="1" value="0">
-        <small data-i18n="aimH"></small>
+        <small>0° er rett mot sentrum. Prøv å sikte slik at ballen treffer sentrum.</small>
       </div>
       <div class="ctrl">
-        <label for="slow" data-i18n="slowL"></label><output id="slowOut" for="slow"></output>
+        <label for="slow">Avspillingsfart</label><output id="slowOut" for="slow"></output>
         <input id="slow" type="range" min="0.25" max="2" step="0.25" value="1">
       </div>
-      <label class="check"><input id="keep" type="checkbox" checked> <span data-i18n="keep"></span></label>
+      <label class="check"><input id="keep" type="checkbox" checked> Behold tidligere spor</label>
       <div class="buttons">
-        <button class="primary" id="throwBtn" data-i18n="throw"></button>
-        <button id="pauseBtn"></button>
-        <button id="clearBtn" data-i18n="clear"></button>
+        <button class="primary" id="throwBtn">Kast ballen</button>
+        <button id="pauseBtn">Pause</button>
+        <button id="clearBtn">Fjern spor</button>
       </div>
     </section>
 
-    <section class="readout" data-i18n-aria="readings">
+    <section class="readout" aria-label="Måleverdier">
       <dl>
-        <dt data-i18n="rT"></dt><dd id="rT"></dd>
-        <dt data-i18n="rV"></dt><dd id="rV">–</dd>
-        <dt data-i18n="rRim"></dt><dd id="rRim">–</dd>
-        <dt data-i18n="rCor"></dt><dd id="rCor">–</dd>
-        <dt data-i18n="rMiss"></dt><dd id="rMiss">–</dd>
+        <dt>Tid siden kast</dt><dd id="rT"></dd>
+        <dt>Ballens fart over bakken</dt><dd id="rV">–</dd>
+        <dt>Kanthastighet ωR</dt><dd id="rRim">–</dd>
+        <dt>Coriolisakselerasjon 2ωv</dt><dd id="rCor">–</dd>
+        <dt>Nærmeste avstand til sentrum</dt><dd id="rMiss">–</dd>
       </dl>
-      <p class="explain" data-i18n-html="explain"></p>
+      <p class="explain">Når ballen slippes, har den både kastefarten innover og kantens fart sidelengs (<b>ωR</b>). Over bakken går den derfor skrått og rett frem. Sett fra karusellen ser det ut som en sidekraft, <b>corioliskraften</b>, bøyer banen. Den virker mot kasterens høyre side når karusellen roterer mot klokka, slik som på den nordlige halvkule.</p>
     </section>
   </div>
 
+  <article>
+
+    <section>
+      <h2>Hva er corioliseffekten?</h2>
+      <p>Corioliseffekten er den tilsynelatende avbøyningen av en bevegelse når den observeres fra et roterende referansesystem, for eksempel en karusell eller jorda. Ingen ekte kraft skyver ballen sidelengs. Avbøyningen oppstår fordi observatøren selv roterer.</p>
+      <p>For å beskrive bevegelsen fra det roterende systemet innfører man en tenkt kraft, corioliskraften:</p>
+      <p><span class="eq">F = −2m ω × v</span></p>
+      <p>Når farten står vinkelrett på rotasjonsaksen, er størrelsen 2mωv. Kraften står alltid vinkelrett på farten, så den endrer retningen, men ikke farten.</p>
+    </section>
+    <section>
+      <h2>Hvorfor bøyer banen av?</h2>
+      <p>Når ballen slippes, har den kantens fart ωR sidelengs i tillegg til kastefarten. Over bakken går den deretter i en rett linje. Kasteren følger karusellen i en bue og dreier hele tiden mot venstre når karusellen roterer mot klokka. Sett fra kasteren ser det derfor ut som ballen glir mot høyre.</p>
+      <p>Krumningsradien i det roterende systemet er omtrent v/(2ω). Lav kastefart eller rask rotasjon gir altså en krappere bue. På karusellen virker også sentrifugalkraften mω²r utover. Den får sporet til å drive utover, og derfor blir det en sløyfe og ikke en ren sirkel.</p>
+    </section>
+    <section>
+      <h2>Corioliseffekten på jorda: vind, lavtrykk og havstrømmer</h2>
+      <p>Sett ovenfra Nordpolen roterer jorda mot klokka, akkurat som karusellen med positiv ω. Derfor avbøyes vind, havstrømmer og prosjektiler mot høyre på den nordlige halvkule og mot venstre på den sørlige.</p>
+      <p>Luft og vann som beveger seg fritt, går i sirkler med klokka på den nordlige halvkule. Det kalles treghetssvingninger, og det er samme dreieretning som ballen i simuleringen. Lavtrykk roterer likevel mot klokka. Trykkraften trekker lufta inn mot sentrum, corioliskraften bøyer den mot høyre, og lufta ender opp med å sirkle rundt lavtrykket med sentrum på venstre side. Rundt et høytrykk går lufta med klokka.</p>
+      <p>Jordas vinkelhastighet er bare 7,29 · 10⁻⁵ rad/s. Effekten merkes derfor over store avstander og lang tid, men bestemmer ikke hvilken vei vannet virvler i en vask.</p>
+    </section>
+    <section>
+      <h2>Prøv selv</h2>
+      <ul>
+        <li>Juster siktevinkelen slik at ballen treffer sentrum ved ω = 0,6 rad/s og v = 4 m/s. Regn ut vinkelen først og sjekk svaret i simuleringen. <span class="hint">Hint: Sidekomponenten av kastefarten må oppheve kantfarten ωR.</span></li>
+        <li>Senk kastefarten til 1–2 m/s. Hvorfor danner sporet en sløyfe?</li>
+        <li>Sett ω til en negativ verdi. Banen bøyer nå mot venstre, som på den sørlige halvkule.</li>
+        <li>Sett ω = 0. Banen blir rett i begge vinduene.</li>
+        <li>Doble ω og se hvordan coriolisakselerasjonen og krumningen endrer seg.</li>
+      </ul>
+    </section>
+  </article>
+
   <footer>
-    <span data-i18n="by"></span>
-    <span><span data-i18n="lic"></span> <a href="https://creativecommons.org/licenses/by/4.0/deed.no" id="licLink" rel="license">CC BY 4.0</a></span>
+    <span>Laget av Geir Lislebo</span>
+    <span>Lisens: <a href="https://creativecommons.org/licenses/by/4.0/deed.no" rel="license">CC BY 4.0</a></span>
+    <span><a href="https://github.com/geirlislebousnno/karusell">Kildekode på GitHub</a></span>
   </footer>
 </div>
 
 <script>
 (() => {
-  const T = {
-    nb: {
-      docTitle: 'Ballkast på karusellen – corioliseffekten i et roterende hjul',
-      title: 'Ballkast på karusellen',
-      lede: 'En person står på kanten av et roterende hjul (radius 5 m) og triller en ball rett mot sentrum. Sett fra bakken går ballen i en rett linje. Sett fra hjulet bøyer banen av, fordi hjulet dreier seg under ballen mens den er underveis.',
-      gTag: 'Treghetssystem', gTitle: 'Sett fra bakken', gAria: 'Hjulet sett ovenfra fra bakken. Hjulet roterer, og ballen går i en rett linje.',
-      wTag: 'Roterende system', wTitle: 'Sett fra hjulet', wAria: 'Hjulet sett fra en som står på det. Hjulet står stille, og ballens spor bøyer av.',
-      legPath: 'Ballens bane over bakken', legTraceRot: 'Sporet på hjulet (roterer med)', legTrace: 'Sporet på hjulet', legAim: 'Siktelinje fra kasteren',
-      settings: 'Innstillinger', readings: 'Måleverdier',
-      omegaL: 'Vinkelhastighet ω', omegaH: 'Positiv verdi betyr rotasjon mot klokka. Endringen gjelder fra neste kast.',
-      ccw: 'mot klokka', cw: 'med klokka', still: 'i ro',
-      speedL: 'Kastefart relativt til hjulet',
-      aimL: 'Siktevinkel', aimH: '0° er rett mot sentrum. Prøv å sikte slik at ballen treffer sentrum.',
-      left: 'mot venstre', right: 'mot høyre', straight: 'rett frem',
-      slowL: 'Avspillingsfart', keep: 'Behold tidligere spor',
-      throw: 'Kast ballen', pause: 'Pause', resume: 'Fortsett', clear: 'Fjern spor',
-      rT: 'Tid siden kast', rV: 'Ballens fart over bakken', rRim: 'Kanthastighet ωR', rCor: 'Corioliskraft per kg, 2ωv', rMiss: 'Nærmeste avstand til sentrum',
-      explain: 'Når ballen slippes, har den både kastefarten innover og kantens fart sidelengs (<b>ωR</b>). Over bakken går den derfor skrått og rett frem. Sett fra hjulet ser det ut som en sidekraft, <b>corioliskraften</b>, bøyer banen. Den virker mot kasterens høyre side når hjulet roterer mot klokka, slik som på den nordlige halvkule.',
-      by: 'Laget av Geir Lislebo', lic: 'Lisens:', licUrl: 'https://creativecommons.org/licenses/by/4.0/deed.no',
-      dec: ','
-    },
-    en: {
-      docTitle: 'Throwing a ball on a merry-go-round – the Coriolis effect',
-      title: 'Throwing a ball on a merry-go-round',
-      lede: 'A person stands at the edge of a rotating wheel (radius 5 m) and rolls a ball straight towards the centre. Seen from the ground, the ball moves in a straight line. Seen from the wheel, the path curves, because the wheel turns underneath the ball while it travels.',
-      gTag: 'Inertial frame', gTitle: 'Seen from the ground', gAria: 'The wheel seen from above, from the ground. The wheel rotates and the ball moves in a straight line.',
-      wTag: 'Rotating frame', wTitle: 'Seen from the wheel', wAria: 'The wheel seen by someone standing on it. The wheel is still and the ball’s trace curves.',
-      legPath: 'Ball’s path over the ground', legTraceRot: 'Trace on the wheel (rotates with it)', legTrace: 'Trace on the wheel', legAim: 'Thrower’s line of aim',
-      settings: 'Settings', readings: 'Readings',
-      omegaL: 'Angular velocity ω', omegaH: 'Positive means anticlockwise. Changes apply from the next throw.',
-      ccw: 'anticlockwise', cw: 'clockwise', still: 'at rest',
-      speedL: 'Throw speed relative to the wheel',
-      aimL: 'Aim angle', aimH: '0° points straight at the centre. Try aiming so the ball hits the centre.',
-      left: 'left', right: 'right', straight: 'straight',
-      slowL: 'Playback speed', keep: 'Keep earlier traces',
-      throw: 'Throw the ball', pause: 'Pause', resume: 'Resume', clear: 'Clear traces',
-      rT: 'Time since throw', rV: 'Ball’s speed over the ground', rRim: 'Rim speed ωR', rCor: 'Coriolis force per kg, 2ωv', rMiss: 'Closest distance to centre',
-      explain: 'When the ball is released it carries both the inward throw speed and the sideways speed of the rim (<b>ωR</b>). Over the ground it therefore travels in a straight, slanted line. Seen from the wheel, it looks as if a sideways force, the <b>Coriolis force</b>, bends the path. It acts towards the thrower’s right when the wheel turns anticlockwise, as in the Northern Hemisphere.',
-      by: 'Made by Geir Lislebo', lic: 'Licence:', licUrl: 'https://creativecommons.org/licenses/by/4.0/',
-      dec: '.'
-    }
-  };
-
+  const T = {"dec": ",", "ccw": "mot klokka", "cw": "med klokka", "still": "i ro", "left": "mot venstre", "right": "mot høyre", "straight": "rett frem", "pause": "Pause", "resume": "Fortsett"};
+  const t = k => T[k];
   const R = 5;
   const $ = id => document.getElementById(id);
   const cvG = $('cvGround'), cvW = $('cvWheel');
   const ctxG = cvG.getContext('2d'), ctxW = cvW.getContext('2d');
-
-  let lang = 'nb';
-  try {
-    const q = new URLSearchParams(location.search).get('lang');
-    const saved = localStorage.getItem('karusell-lang');
-    if (q === 'en' || q === 'nb') lang = q;
-    else if (saved === 'en' || saved === 'nb') lang = saved;
-    else if (!/^(nb|nn|no)\b/i.test(navigator.language || 'nb')) lang = 'en';
-  } catch (e) {}
-  const t = k => T[lang][k];
   const fmt = (x, d=2) => x.toFixed(d).replace('.', t('dec')).replace('-', '−');
 
   const S = { theta: 0, omega: +$('omega').value, paused: false, throws: [], active: null };
@@ -307,10 +296,9 @@ footer a{color:inherit}
     ctx.restore();
   }
 
-  function polyline(ctx, pts, color, w, px, rot=0, dash=null, alpha=1){
+  function polyline(ctx, pts, color, w, px, rot=0, dash=null){
     if (pts.length < 2) return;
     ctx.save();
-    ctx.globalAlpha = alpha;
     ctx.rotate(rot);
     ctx.strokeStyle = color; ctx.lineWidth = w*px; ctx.lineJoin = 'round'; ctx.lineCap='round';
     if (dash) ctx.setLineDash(dash.map(d=>d*px));
@@ -374,22 +362,6 @@ footer a{color:inherit}
     $('slowOut').textContent = fmt(+$('slow').value) + '×';
   }
 
-  function applyLang(l){
-    lang = l;
-    document.documentElement.lang = l;
-    document.title = t('docTitle');
-    document.querySelectorAll('[data-i18n]').forEach(el => el.textContent = t(el.dataset.i18n));
-    document.querySelectorAll('[data-i18n-html]').forEach(el => el.innerHTML = t(el.dataset.i18nHtml));
-    document.querySelectorAll('[data-i18n-aria]').forEach(el => el.setAttribute('aria-label', t(el.dataset.i18nAria)));
-    $('licLink').href = t('licUrl');
-    $('langNb').setAttribute('aria-pressed', l === 'nb');
-    $('langEn').setAttribute('aria-pressed', l === 'en');
-    syncOutputs(); syncPause();
-    try { localStorage.setItem('karusell-lang', l); } catch (e) {}
-  }
-  $('langNb').addEventListener('click', () => applyLang('nb'));
-  $('langEn').addEventListener('click', () => applyLang('en'));
-
   ['omega','speed','aim','slow'].forEach(id => $(id).addEventListener('input', () => {
     syncOutputs();
     if (id === 'omega' && (!S.active || S.active.done)) S.omega = +$('omega').value;
@@ -410,7 +382,7 @@ footer a{color:inherit}
     requestAnimationFrame(loop);
   }
 
-  applyLang(lang);
+  syncOutputs();
   S.theta = 0;
   throwBall();
   for (let i=0;i<2000 && !S.active.done;i++) step(0.01);
